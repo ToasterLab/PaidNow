@@ -1,22 +1,29 @@
 const Truelayer = require(`../truelayer`)
+const UserManager = require(`../utils/UserManager`)
 
 const AuthCallback = async (req, res) => {
-  const { code } = req.query
+  const { code, email = `leejinhuey@gmail.com` } = req.query // temporary auth
   const {
     access_token: accessToken,
-    // refresh_token: refreshToken
+    refresh_token: refreshToken
   } = await Truelayer.getToken(code)
 
-  const info = await Truelayer.getInfo(accessToken)
-  if (info.status !== `Succeeded`) {
-    console.error(info)
-    throw new Error(`Failed to fetch info from Truelayer`)
-  }
-  const { full_name: fullName } = info.results[0]
+  const { full_name: fullName } = await Truelayer.getInfo(accessToken)
+  const {
+    provider: {
+      provider_id: providerId
+    }
+  } = await Truelayer.getMe(accessToken)
 
-  console.log(await Truelayer.getMe(accessToken))
+  await UserManager.createUser({
+    email,
+    name: fullName,
+    providerId,
+    refreshToken
+  })
+
   res.set(`Content-Type`, `text/plain`)
-  res.send(`Access Token: ${JSON.stringify(info, null, 2)}`)
+  res.send(`User: ${email}`)
 }
 
 module.exports = AuthCallback

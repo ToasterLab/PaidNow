@@ -1,5 +1,6 @@
+const path = require(`path`)
 const firebase = require(`firebase-admin`)
-const serviceAccount = require(process.env.GOOGLE_APPLICATION_CREDENTIALS)
+const serviceAccount = require(path.join(path.resolve(__dirname), `..`, process.env.GOOGLE_APPLICATION_CREDENTIALS))
 
 const app = firebase.initializeApp({
   credential: firebase.credential.cert(serviceAccount),

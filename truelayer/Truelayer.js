@@ -27,11 +27,31 @@ Truelayer.getAuthURL = () => {
   return authURL
 }
 
-Truelayer.getToken = (code) => Truelayer.client.exchangeCodeForToken(CALLBACK_URL, code)
+Truelayer.getToken = async (code) => {
+  const tokens = await Truelayer.client.exchangeCodeForToken(CALLBACK_URL, code)
+  console.log(JSON.stringify(tokens))
+  return tokens
+}
 
-Truelayer.getInfo = (accessToken) => DataAPIClient.getInfo(accessToken)
+Truelayer.getInfo = async (accessToken) => {
+  const info = await DataAPIClient.getInfo(accessToken)
+  if (info.status !== `Succeeded`) {
+    console.error(info)
+    throw new Error(`Failed to fetch info from Truelayer`)
+  }
+  console.log(JSON.stringify(info))
+  return info.results[0]
+}
 
-Truelayer.getMe = (accessToken) => DataAPIClient.getMe(accessToken)
+Truelayer.getMe = async (accessToken) => {
+  const me = await DataAPIClient.getMe(accessToken)
+  if (me.status !== `Succeeded`) {
+    console.error(me)
+    throw new Error(`Failed to fetch me from Truelayer`)
+  }
+  console.log(JSON.stringify(me))
+  return me.results[0]
+}
 
 Truelayer.refreshAccessToken = (refreshToken) => AuthAPIClient.refreshAccessToken(refreshToken)
 
