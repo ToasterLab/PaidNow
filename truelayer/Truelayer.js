@@ -31,4 +31,8 @@ Truelayer.getToken = (code) => Truelayer.client.exchangeCodeForToken(CALLBACK_UR
 
 Truelayer.getInfo = (accessToken) => DataAPIClient.getInfo(accessToken)
 
+Truelayer.getMe = (accessToken) => DataAPIClient.getMe(accessToken)
+
+Truelayer.refreshAccessToken = (refreshToken) => AuthAPIClient.refreshAccessToken(refreshToken)
+
 module.exports = Truelayer
