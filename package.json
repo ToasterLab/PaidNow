@@ -4,19 +4,21 @@
   "description": "be notified when there's activity in your bank account",
   "main": "app.js",
   "dependencies": {
-    "dotenv-expand": "^5.1.0",
     "express": "^4.17.1",
-    "truelayer-client": "^1.2.2"
+    "firebase": "^6.4.2",
+    "truelayer-client": "^1.3.1"
   },
   "devDependencies": {
     "dotenv": "^8.0.0",
+    "dotenv-expand": "^5.1.0",
     "eslint": "^6.1.0",
     "eslint-plugin-node": "^9.1.0",
     "nodemon": "^1.19.1"
   },
   "scripts": {
     "start": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "eslint . --fix --ext .js --cache --ignore-path .eslintignore"
   },
   "author": "Huey <leejinhuey@gmail.com>",
   "license": "UNLICENSED"
