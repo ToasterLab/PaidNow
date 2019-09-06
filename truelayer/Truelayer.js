@@ -4,8 +4,6 @@ const TRUELAYER_CLIENT_ID = process.env.TRUELAYER_CLIENT_ID
 const TRUELAYER_CLIENT_SECRET = process.env.TRUELAYER_CLIENT_SECRET
 const CALLBACK_URL = process.env.CALLBACK_URL
 
-console.log(CALLBACK_URL)
-
 // permission scopes
 const scopes = [`info`, `accounts`, `balance`, `transactions`, `offline_access`, `cards`]
 
@@ -23,7 +21,7 @@ Truelayer.getAuthURL = () => {
     nonce: `nonce`,
     enableMock: true
   })
-  console.log(authURL)
+  console.log(`AUTH URL: ${authURL}`)
   return authURL
 }
 
@@ -53,6 +51,11 @@ Truelayer.getMe = async (accessToken) => {
   return me.results[0]
 }
 
+/**
+ * @param {string} refreshToken 
+ * @return {{access_token: String, refresh_token: String}} 
+ *         The refreshed credentials
+ */
 Truelayer.refreshAccessToken = (refreshToken) => AuthAPIClient.refreshAccessToken(refreshToken)
 
 module.exports = Truelayer

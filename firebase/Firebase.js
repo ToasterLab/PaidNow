@@ -11,5 +11,6 @@ const db = firebase.firestore()
 
 module.exports = {
   app,
-  db
+  db,
+  FieldPath: firebase.firestore.FieldPath,
 }
