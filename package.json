@@ -2,7 +2,15 @@
   "name": "paid_now",
   "version": "1.0.0",
   "description": "be notified when there's activity in your bank account",
+  "license": "UNLICENSED",
+  "author": "Huey <leejinhuey@gmail.com>",
   "main": "app.js",
+  "scripts": {
+    "format": "eslint . --fix --ext .js --cache --ignore-path .eslintignore",
+    "start": "node app.js",
+    "start:dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "express": "^4.17.1",
     "firebase-admin": "^8.5.0",
@@ -14,12 +22,5 @@
     "eslint": "^6.3.0",
     "eslint-plugin-node": "^10.0.0",
     "nodemon": "^1.19.2"
-  },
-  "scripts": {
-    "start": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "eslint . --fix --ext .js --cache --ignore-path .eslintignore"
-  },
-  "author": "Huey <leejinhuey@gmail.com>",
-  "license": "UNLICENSED"
+  }
 }
