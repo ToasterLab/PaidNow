@@ -1,4 +1,5 @@
 const { AuthAPIClient, DataAPIClient } = require(`truelayer-client`)
+const dayjs = require(`dayjs`)
 
 const TRUELAYER_CLIENT_ID = process.env.TRUELAYER_CLIENT_ID
 const TRUELAYER_CLIENT_SECRET = process.env.TRUELAYER_CLIENT_SECRET
@@ -56,6 +57,33 @@ Truelayer.getMe = async (accessToken) => {
  * @return {{access_token: String, refresh_token: String}} 
  *         The refreshed credentials
  */
-Truelayer.refreshAccessToken = (refreshToken) => AuthAPIClient.refreshAccessToken(refreshToken)
+Truelayer.refreshAccessToken = (refreshToken) => Truelayer.client.refreshAccessToken(refreshToken)
+
+Truelayer.getAccounts = async ({
+  accessToken
+}) => {
+  const result = await DataAPIClient.getAccounts(accessToken)
+  if (result.status !== `Succeeded`) {
+    throw new Error(`Could not fetch accounts: ${JSON.stringify(result)}`)
+  }
+  return result.results
+}
+
+/**
+ * @param {string} from YYYY-MM-DD
+ * @param {string} to YYYY-MM-DD
+ */
+Truelayer.getTransactions = async ({
+  accessToken,
+  accountId,
+  from = dayjs().subtract(7, `day`).format(`YYYY-MM-DD`),
+  to = dayjs().format(`YYYY-MM-DD`)
+}) => {
+  const result = await DataAPIClient.getTransactions(accessToken, accountId, from, to)
+  if (result.status !== `Succeeded`) {
+    throw new Error(`Could not fetch transactions: ${JSON.stringify(result)}`)
+  }
+  return result.results
+}
 
 module.exports = Truelayer

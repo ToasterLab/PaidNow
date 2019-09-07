@@ -19,6 +19,29 @@ const createUser = async ({
   return email
 }
 
+const getRefreshTokens = async ({
+  email,
+}) => {
+  const querySnapshot = await db.collection(USERS_COLLECTION).doc(email).get()
+  const user = querySnapshot.data()
+  if (!user.providers || Object.keys(user.providers).length === 0) {
+    throw new Error(`User has no providers`)
+  }
+  return user.providers
+}
+
+const updateRefreshToken = async ({
+  email,
+  providerId,
+  refreshToken
+}) => {
+  await db.collection(USERS_COLLECTION).doc(email).update(
+    new FieldPath(`providers`, providerId), refreshToken
+  )
+}
+
 module.exports = {
   createUser,
+  getRefreshTokens,
+  updateRefreshToken
 }
