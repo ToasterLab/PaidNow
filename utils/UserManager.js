@@ -77,10 +77,18 @@ const getLastTransaction = async ({
   }
 }
 
+const getNotificationChannels = async ({
+  email
+}) => {
+  const querySnapshot = await db.collection(USERS_COLLECTION).doc(email).get()
+  return querySnapshot.get(`notificationChannels`)
+}
+
 module.exports = {
   createUser,
   getRefreshTokens,
   updateRefreshToken,
   updateAccount,
-  getLastTransaction
+  getLastTransaction,
+  getNotificationChannels
 }
