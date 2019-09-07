@@ -49,8 +49,8 @@ const updateAccount = async ({ email, accessToken, providerId, account }) => {
   }
 
   const {
-    lastTransactionId,
-    lastTransactionTimestamp
+    lastTransactionId = ``,
+    lastTransactionTimestamp = ``
   } = await UserManager.getLastTransaction({ email, providerId, accountId })
   const currrentTransactionId = transactions[0].transaction_id
   const currentTimestamp = transactions[0].timestamp

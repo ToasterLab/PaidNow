@@ -22,13 +22,11 @@ Truelayer.getAuthURL = () => {
     nonce: `nonce`,
     enableMock: true
   })
-  console.log(`AUTH URL: ${authURL}`)
   return authURL
 }
 
 Truelayer.getToken = async (code) => {
   const tokens = await Truelayer.client.exchangeCodeForToken(CALLBACK_URL, code)
-  console.log(JSON.stringify(tokens))
   return tokens
 }
 
@@ -38,7 +36,6 @@ Truelayer.getInfo = async (accessToken) => {
     console.error(info)
     throw new Error(`Failed to fetch info from Truelayer`)
   }
-  console.log(JSON.stringify(info))
   return info.results[0]
 }
 
@@ -48,7 +45,6 @@ Truelayer.getMe = async (accessToken) => {
     console.error(me)
     throw new Error(`Failed to fetch me from Truelayer`)
   }
-  console.log(JSON.stringify(me))
   return me.results[0]
 }
 

@@ -67,6 +67,10 @@ const getLastTransaction = async ({
   accountId
 }) => {
   const querySnapshot = await db.collection(USERS_COLLECTION).doc(email).get()
+  const account = querySnapshot.get(`providers.${providerId}.accounts.${accountId}`)
+  if (!account) { // no check yet
+    return {}
+  }
   const {
     lastTransactionId,
     lastTransactionTimestamp
