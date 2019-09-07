@@ -24,11 +24,11 @@ const getRefreshTokens = async ({
   email,
 }) => {
   const querySnapshot = await db.collection(USERS_COLLECTION).doc(email).get()
-  const user = querySnapshot.data()
-  if (!user.providers || Object.keys(user.providers).length === 0) {
+  const providers = querySnapshot.get(`providers`)
+  if (!providers || Object.keys(providers).length === 0) {
     throw new Error(`User has no providers`)
   }
-  return Object.entries(user.providers).map(
+  return Object.entries(providers).map(
     ([providerId, provider]) => ({ [providerId]: provider.refreshToken })
   )
 }
@@ -61,9 +61,26 @@ const updateAccount = async ({
   )
 }
 
+const getLastTransaction = async ({
+  email,
+  providerId,
+  accountId
+}) => {
+  const querySnapshot = await db.collection(USERS_COLLECTION).doc(email).get()
+  const {
+    lastTransactionId,
+    lastTransactionTimestamp
+  } = querySnapshot.get(`providers.${providerId}.accounts.${accountId}`)
+  return {
+    lastTransactionId,
+    lastTransactionTimestamp: lastTransactionTimestamp.toDate()
+  }
+}
+
 module.exports = {
   createUser,
   getRefreshTokens,
   updateRefreshToken,
-  updateAccount
+  updateAccount,
+  getLastTransaction
 }

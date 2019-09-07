@@ -1,3 +1,4 @@
+const dayjs = require(`dayjs`)
 const Truelayer = require(`../truelayer`)
 const UserManager = require(`../utils/UserManager`)
 
@@ -24,26 +25,36 @@ const updateAccount = async ({ email, accessToken, providerId, account }) => {
 
   if (transactions.length === 0) {
     // no transactions during this period
-    return
+    return []
   }
 
-  return await UserManager.updateAccount({
-    email,
-    providerId,
-    accountId,
-    accountName: displayName,
-    transactionId: transactions[0].transaction_id,
-    timestamp: transactions[0].timestamp
-  })
+  const {
+    lastTransactionId,
+    lastTransactionTimestamp
+  } = await UserManager.getLastTransaction({ email, providerId, accountId })
+  const currrentTransactionId = transactions[0].transaction_id
+  const currentTimestamp = transactions[0].timestamp
+  if (currrentTransactionId !== lastTransactionId) {
+    await UserManager.updateAccount({
+      email,
+      providerId,
+      accountId,
+      accountName: displayName,
+      transactionId: currrentTransactionId,
+      timestamp: currentTimestamp
+    })
+    return transactions.filter(txn => dayjs(txn.timestamp).isAfter(dayjs(lastTransactionTimestamp)))
+  }
+  return []
 }
 
 const Check = async (req, res) => {
   const email = `leejinhuey@gmail.com`
   const providers = await UserManager.getRefreshTokens({ email })
 
-  await Promise.all(providers.map(provider => updateProvider({ email, provider })))
+  const newTransactions = await Promise.all(providers.map(provider => updateProvider({ email, provider })))
 
-  res.send({ success: true })
+  res.send({ success: true, newTransactions })
 }
 
 module.exports = Check
