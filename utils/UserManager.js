@@ -1,3 +1,4 @@
+const dayjs = require(`dayjs`)
 const Firebase = require(`../firebase`)
 
 const { db, FieldPath } = Firebase
@@ -14,7 +15,7 @@ const createUser = async ({
     name
   }, { merge: true })
   await db.collection(USERS_COLLECTION).doc(email).update(
-    new FieldPath(`providers`, providerId), refreshToken
+    new FieldPath(`providers`, providerId, `refreshToken`), refreshToken
   )
   return email
 }
@@ -27,7 +28,9 @@ const getRefreshTokens = async ({
   if (!user.providers || Object.keys(user.providers).length === 0) {
     throw new Error(`User has no providers`)
   }
-  return user.providers
+  return Object.entries(user.providers).map(
+    ([providerId, provider]) => ({ [providerId]: provider.refreshToken })
+  )
 }
 
 const updateRefreshToken = async ({
@@ -36,12 +39,31 @@ const updateRefreshToken = async ({
   refreshToken
 }) => {
   await db.collection(USERS_COLLECTION).doc(email).update(
-    new FieldPath(`providers`, providerId), refreshToken
+    new FieldPath(`providers`, providerId, `refreshToken`), refreshToken
+  )
+}
+
+const updateAccount = async ({
+  email,
+  providerId,
+  accountId,
+  accountName = ``,
+  transactionId,
+  timestamp
+}) => {
+  await db.collection(USERS_COLLECTION).doc(email).update(
+    new FieldPath(`providers`, providerId, `accounts`, accountId),
+    {
+      accountName,
+      lastTransactionTimestamp: dayjs(timestamp).toDate(),
+      lastTransactionId: transactionId
+    }
   )
 }
 
 module.exports = {
   createUser,
   getRefreshTokens,
-  updateRefreshToken
+  updateRefreshToken,
+  updateAccount
 }
