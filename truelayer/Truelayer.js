@@ -72,14 +72,17 @@ Truelayer.getAccounts = async ({
 Truelayer.getTransactions = async ({
   accessToken,
   accountId,
-  from = dayjs().subtract(7, `day`).format(`YYYY-MM-DD`),
+  from = dayjs().subtract(7, `day`).format(`YYYY-MM-DD`), // look 1 week back
   to = dayjs().format(`YYYY-MM-DD`)
 }) => {
-  const result = await DataAPIClient.getTransactions(accessToken, accountId, from, to)
-  if (result.status !== `Succeeded`) {
-    throw new Error(`Could not fetch transactions: ${JSON.stringify(result)}`)
+  const [actualResult, pendingResult] = await Promise.all([
+    DataAPIClient.getTransactions(accessToken, accountId, from, to),
+    DataAPIClient.getPendingTransactions(accessToken, accountId)
+  ])
+  if (actualResult.status !== `Succeeded` || pendingResult.status !== `Succeeded`) {
+    throw new Error(`Could not fetch transactions: ${JSON.stringify(actualResult)} ${JSON.stringify(pendingResult)}`)
   }
-  return result.results
+  return [...actualResult, ...pendingResult].sort((a, b) => (a.timestamp.toDate() - b.timestamp.toDate()))
 }
 
 module.exports = Truelayer

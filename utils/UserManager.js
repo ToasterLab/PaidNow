@@ -37,11 +37,9 @@ const updateRefreshToken = async ({
   email,
   providerId,
   refreshToken
-}) => {
-  await db.collection(USERS_COLLECTION).doc(email).update(
-    new FieldPath(`providers`, providerId, `refreshToken`), refreshToken
-  )
-}
+}) => db.collection(USERS_COLLECTION).doc(email).update(
+  new FieldPath(`providers`, providerId, `refreshToken`), refreshToken
+)
 
 const updateAccount = async ({
   email,
@@ -50,16 +48,14 @@ const updateAccount = async ({
   accountName = ``,
   transactionId,
   timestamp
-}) => {
-  await db.collection(USERS_COLLECTION).doc(email).update(
-    new FieldPath(`providers`, providerId, `accounts`, accountId),
-    {
-      accountName,
-      lastTransactionTimestamp: dayjs(timestamp).toDate(),
-      lastTransactionId: transactionId
-    }
-  )
-}
+}) => db.collection(USERS_COLLECTION).doc(email).update(
+  new FieldPath(`providers`, providerId, `accounts`, accountId),
+  {
+    accountName,
+    lastTransactionTimestamp: dayjs(timestamp).toDate(),
+    lastTransactionId: transactionId
+  }
+)
 
 const getLastTransaction = async ({
   email,

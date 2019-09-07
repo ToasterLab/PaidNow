@@ -35,16 +35,6 @@ const formatTransactions = (channel, transactions) => {
         output += `\n\n`
       })
       return output
-      // return transactions.reduce((provStr, provider) => {
-      //   return provStr += provider.reduce((accStr, account) => {
-      //     return accStr += account.reduce((txnStr, transaction) => {
-      //       const {
-
-      //       }
-      //       return txnStr += ``
-      //     })
-      //   })
-      // }, ``)
     }
     default:
       return JSON.stringify(transactions)

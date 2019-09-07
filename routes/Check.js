@@ -27,7 +27,7 @@ const updateProvider = async ({ email, provider }) => {
   if (providerDetails) {
     return {
       ...providerDetails,
-      accounts: accountsResult
+      accounts: accountsResult.filter(a => a !== null)
     }
   }
   return null
@@ -42,6 +42,7 @@ const updateAccount = async ({ email, accessToken, providerId, account }) => {
     accessToken,
     accountId
   })
+  if (providerId === `lloyds`) { console.log(`lloyds`, transactions) }
 
   if (transactions.length === 0) {
     // no transactions during this period
