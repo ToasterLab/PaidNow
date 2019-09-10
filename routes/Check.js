@@ -38,11 +38,12 @@ const updateAccount = async ({ email, accessToken, providerId, account }) => {
     account_id: accountId,
     display_name: displayName
   } = account
+
   const transactions = await Truelayer.getTransactions({
     accessToken,
+    providerId,
     accountId
   })
-  if (providerId === `lloyds`) { console.log(`lloyds`, transactions) }
 
   if (transactions.length === 0) {
     // no transactions during this period

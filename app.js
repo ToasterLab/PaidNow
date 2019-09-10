@@ -4,9 +4,12 @@ if (process.env.NODE_ENV !== `production`) {
 }
 
 const express = require(`express`)
+const morgan = require(`morgan`)
 const routes = require(`./routes`)
 
 const app = express()
+
+app.use(morgan(`combined`))
 
 const PORT = process.env.PORT
 

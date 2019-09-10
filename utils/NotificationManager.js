@@ -5,6 +5,7 @@ const CHANNELS = {
   TELEGRAM: `telegram`
 }
 
+// TODO: handle very long messages with very many transactions
 const sendNotifications = async ({ notificationChannels, transactions }) => {
   await Promise.all(
     Object.keys(notificationChannels).map(channel => {

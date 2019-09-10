@@ -71,18 +71,27 @@ Truelayer.getAccounts = async ({
  */
 Truelayer.getTransactions = async ({
   accessToken,
+  providerId,
   accountId,
   from = dayjs().subtract(7, `day`).format(`YYYY-MM-DD`), // look 1 week back
   to = dayjs().format(`YYYY-MM-DD`)
 }) => {
-  const [actualResult, pendingResult] = await Promise.all([
-    DataAPIClient.getTransactions(accessToken, accountId, from, to),
-    DataAPIClient.getPendingTransactions(accessToken, accountId)
-  ])
+  const tasks = [DataAPIClient.getTransactions(accessToken, accountId, from, to)]
+
+  const doNotSupportPending = [`oauth-monzo`]
+  if (!doNotSupportPending.includes(providerId)) {
+    tasks.push(DataAPIClient.getPendingTransactions(accessToken, accountId))
+  } else {
+    tasks.push(Promise.resolve({ status: `Succeeded`, results: [] }))
+  }
+
+  const [actualResult, pendingResult] = await Promise.all(tasks)
+
   if (actualResult.status !== `Succeeded` || pendingResult.status !== `Succeeded`) {
     throw new Error(`Could not fetch transactions: ${JSON.stringify(actualResult)} ${JSON.stringify(pendingResult)}`)
   }
-  return [...actualResult, ...pendingResult].sort((a, b) => (a.timestamp.toDate() - b.timestamp.toDate()))
+
+  return [...actualResult.results, ...pendingResult.results].sort((a, b) => (new Date(b.timestamp) - new Date(a.timestamp)))
 }
 
 module.exports = Truelayer
